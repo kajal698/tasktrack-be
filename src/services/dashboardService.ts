@@ -1,14 +1,3 @@
-// import { Response } from "express";
-// import { AuthRequest } from "../utils/authMiddleware";
-// import { getDashboardSummaryRepo } from "../repositories/dashboardRepo";
-
-// export const getDashboardSummary = async (
-//   req: AuthRequest,
-//   res: Response
-// ) => {
-//   const summary = await getDashboardSummaryRepo();
-//   res.json(summary);
-// };
 
 
 import { Request, Response } from "express";

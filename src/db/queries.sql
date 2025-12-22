@@ -85,3 +85,7 @@ SET assigned_to = '<user_uuid>',  -- Replace with the UUID of the user
     updated_at = NOW()
 WHERE id = '<task_uuid>';         -- Replace with the UUID of the task
 
+
+ALTER TABLE tasks
+  ALTER COLUMN added_by TYPE uuid USING added_by::uuid,
+  ALTER COLUMN assigned_to TYPE uuid USING assigned_to::uuid;
