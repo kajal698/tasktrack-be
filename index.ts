@@ -13,6 +13,8 @@ import morgan from "morgan";
 import { notificationRouter } from "./src/routes/notification";
 import { adminReportRouter } from "./src/routes/adminReports";
 import { getDashboardSummary } from "./src/services/dashboardService";
+import { adminDashboardRouter } from "./src/routes/adminDashboard";
+import { notificationsRouter } from "./src/routes/admiNotifications";
 
 //express is Node.js web framework you’re using to handle routes and APIs
 //a middleware that allows your backend to be accessed from other origins
@@ -39,11 +41,15 @@ app.use("/a/reports", adminReportRouter)
 app.use("/a/tasks", adminTasksRouter)
 
 
+//for comments
+app.use("/a/notifications", notificationsRouter)
+
 // dashboard
-app.use("/a/dashboard/summary", getDashboardSummary)
+app.use("/a/dashboard/summary", adminDashboardRouter)
 
 //for comments
 app.use("/u/comments", adminCommentsRouter)
+
 
 //for auth - register or login 
 app.use("/auth", authRouter);
