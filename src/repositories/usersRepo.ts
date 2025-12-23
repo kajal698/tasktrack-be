@@ -1,5 +1,13 @@
 import { client } from "../utils/pg";
 
+
+// export const getUserByIdRepo = async (id: string) => {
+//   const result = await client.query(
+//     "SELECT * FROM users WHERE id = $1",
+//     [id]
+//   );
+//   return result.rows[0];
+// };
 // export const createUserRepo = async (data: any) => {
 //   const {
 //     username = "",

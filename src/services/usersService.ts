@@ -1,7 +1,31 @@
 import {Request, Response} from "express";
 import { createUserRepo, deleteUserRepo, getUserByIdRepo, updateUserRepo } from "../repositories/usersRepo";
 import { client } from "../utils/pg";
+import { AuthRequest } from "../utils/authMiddleware";
 
+
+export const getProfile = async (req: AuthRequest, res: Response) => {
+  try {
+    const userId = req.user?.id;
+
+    if (!userId) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+
+    const user = await getUserByIdRepo(userId);
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    // 🔐 remove password
+    delete user.password;
+
+    res.json(user);
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+};
 
 //get users data
 
