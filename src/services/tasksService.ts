@@ -25,28 +25,40 @@ import { AuthRequest } from "../utils/authMiddleware";
 
 // Create task
 export const createTasks = async (req: AuthRequest, res: Response) => {
-    const { task, project_id, status = "pending", assigned_to } = req.body;
+  const {
+    task,
+    description,
+    due_date,
+    project_id,
+    status = "pending",
+    assigned_to,
+  } = req.body;
 
-    // added_by comes from the logged-in user
-    const added_by = req.user?.id;
+  const added_by = req.user?.id;
 
-    if (!task || !project_id || !added_by) {
-        return res.status(400).json({ error: "task, project_id, and added_by are required" });
-    }
+  if (!task || !project_id || !added_by) {
+    return res.status(400).json({
+      error: "task, project_id, and added_by are required",
+    });
+  }
 
-    try {
-        const newTask = await createTasksRepo({
-            task,
-            project_id: project_id || null,
-            status,
-            added_by, // from token
-            assigned_to: assigned_to || null,
-        });
+  try {
+    const clean = (v: any) => (v === "" ? null : v);
 
-        res.status(201).json(newTask);
-    } catch (error: any) {
-        res.status(500).json({ error: error.message });
-    }
+    const newTask = await createTasksRepo({
+      task,
+      description: clean(description),
+      due_date: clean(due_date),
+      project_id,
+      status,
+      added_by,
+      assigned_to: clean(assigned_to),
+    });
+
+    res.status(201).json(newTask);
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
 };
 
 export const getAllTasks = async (req: Request, res: Response) => {
@@ -90,17 +102,50 @@ export const getTaskById = async (req: Request, res: Response) => {
 };
 
 // Update task
-export const updateTask = async (req: Request, res: Response) => {
-    const { id } = req.params;
-    const data = req.body;
+// export const updateTask = async (req: Request, res: Response) => {
+//     const { id } = req.params;
+//     const data = req.body;
 
-    try {
-        const updatedTask = await updateTaskRepo(id, data);
-        if (!updatedTask) return res.status(404).json({ message: "Task not found" });
-        res.json(updatedTask);
-    } catch (error: any) {
-        res.status(500).json({ error: error.message });
+//     try {
+//         const updatedTask = await updateTaskRepo(id, data);
+//         if (!updatedTask) return res.status(404).json({ message: "Task not found" });
+//         res.json(updatedTask);
+//     } catch (error: any) {
+//         res.status(500).json({ error: error.message });
+//     }
+// };
+
+export const updateTask = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const {
+    task,
+    description,
+    due_date,
+    project_id,
+    status,
+    assigned_to,
+  } = req.body;
+
+  const clean = (v: any) => (v === "" ? null : v);
+
+  try {
+    const updatedTask = await updateTaskRepo(id, {
+      task,
+      description: clean(description),
+      due_date: clean(due_date),
+      project_id,
+      status,
+      assigned_to: clean(assigned_to),
+    });
+
+    if (!updatedTask) {
+      return res.status(404).json({ message: "Task not found" });
     }
+
+    res.json(updatedTask);
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
 };
 
 // Delete task

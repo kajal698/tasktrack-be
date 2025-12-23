@@ -89,3 +89,8 @@ WHERE id = '<task_uuid>';         -- Replace with the UUID of the task
 ALTER TABLE tasks
   ALTER COLUMN added_by TYPE uuid USING added_by::uuid,
   ALTER COLUMN assigned_to TYPE uuid USING assigned_to::uuid;
+
+  SELECT id, added_by
+FROM tasks
+WHERE added_by IS NOT NULL
+  AND added_by !~* '^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$';
